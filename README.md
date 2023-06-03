@@ -1,6 +1,6 @@
 # PBNN
 
 # Table of contents
--Install
+- [Install](#install)
 
-#Install
+# Install
