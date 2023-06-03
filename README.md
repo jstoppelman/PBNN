@@ -12,6 +12,8 @@ To install, there are a few packages that need to be loaded. Make sure you have 
 pip install -r requirements.txt
 conda install -c conda-forge openmm
 conda install -c conda-forge ase
+conda install -c conda-forge MDAnalysis
+conda install -c conda-forge mdtraj
 ```
 
 Next, intall [SchNetPack](https://github.com/jstoppelman/schnetpack) from my own repo.
