@@ -15,4 +15,4 @@ conda install -c conda-forge ase
 ```
 
 Next, intall [SchNetPack](https://github.com/jstoppelman/schnetpack) from my own repo.
-Finally, install [Psi4](https://github.com/johnppederson/psi4) to run QM/MM. You can find instructions for installing Psi4 in the docs directory I have included in this package.
+Finally, install [Psi4](https://github.com/johnppederson/psi4) to run QM/MM. You can find instructions for installing Psi4 in the [docs](https://github.com/jstoppelman/PBNN/blob/main/docs/psi4_intall.md) directory I have included in this package.
