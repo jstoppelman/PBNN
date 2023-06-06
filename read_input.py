@@ -387,9 +387,7 @@ class QMMMSetup:
 
         self.simulation_settings_formatted = {}
         self.name = simulation_settings["name"]
-        self.jobtype = simulation_settings["jobtype"]
-        print(self.jobtype)
-        sys.exit()
+        self.jobtype = simulation_settings.get("jobtype", None)
         time_step, num_steps = float(simulation_settings["time_step"]), int(simulation_settings["num_steps"])
         temp, temp_init = float(simulation_settings["temp"]), float(simulation_settings["temp_init"])
         remove_rotation, remove_translation = simulation_settings["remove_rotation"] == "True", simulation_settings["remove_translation"] == "True"

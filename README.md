@@ -17,4 +17,5 @@ conda install -c conda-forge mdtraj
 ```
 
 Next, intall [SchNetPack](https://github.com/jstoppelman/schnetpack) from my own repo.
+Follow the instructions for installing [Plumed](https://www.plumed.org/doc-v2.8/user-doc/html/_installation.html)
 Finally, install [Psi4](https://github.com/johnppederson/psi4) to run QM/MM. You can find instructions for installing Psi4 in the [docs](https://github.com/jstoppelman/PBNN/blob/main/docs/psi4_intall.md) directory I have included in this package.
