@@ -5,6 +5,7 @@
        <ff_file file="SN2_no_intra.xml" />
        <res_file file="SN2_residues.xml" />
        <platform platform="CPU" />
+       <!--Residues which contain the QM atoms (indexed from 0)!-->
        <qm_residues residue="0,1" />
    </OpenMM_Settings>
    <Psi4_Settings>
