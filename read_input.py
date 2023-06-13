@@ -353,7 +353,7 @@ class QMMMSetup:
         ff_xml_list = ff_xml_file.split(',')
         ff_xml_list = [ffdir +'/'+ff_file for ff_file in ff_xml_list]
 
-        self.mm = OpenMMInterface(ffdir+'/'+self.pdb_file, self.residue_xml_list, ff_xml_list, platform, self.qm_atoms)
+        self.mm = OpenMMInterface(self.pdb_file, self.residue_xml_list, ff_xml_list, platform, self.qm_atoms)
 
     def _qm_settings(self):
         ################ Block for settings for Psi4 Interface ################
@@ -1403,7 +1403,7 @@ class ReadSettingsQMMM(ReadSettings):
                 qm_residues = omm_settings["qm_residues"].split(',')
                 atoms = []
                 for res in qm_residues:
-                    index = traj.top.select(f"residue {res}")
+                    index = traj.top.select(f"resid {res}")
                     for i in index: atoms.append(i)
                 omm_settings["qm_atoms"] = atoms
                 

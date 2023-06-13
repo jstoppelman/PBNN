@@ -1,11 +1,11 @@
 <Settings>
    <OpenMM_Settings>
        <ffdir dir="ffdir_pbnn" />
-       <pdb_file file="ch3cl_liquid_out.pdb" />
+       <pdb_file file="diabat1_solvent.pdb" />
        <ff_file file="SN2_no_intra.xml" />
        <res_file file="SN2_residues.xml" />
        <platform platform="CPU" />
-       <qm_residues residue="1,2" />
+       <qm_residues residue="0,1" />
    </OpenMM_Settings>
    <Psi4_Settings>
        <dft_functional name="PBE0" />
@@ -20,7 +20,7 @@
        <embedding_cutoff value="14" />
    </Psi4_Settings>
    <Simulation_Settings>
-       <name name="sn2_liquid_test" />
+       <name name="sn2_liquid" />
        <ensemble name="nvt" />
        <time_step value="1.0" />
        <num_steps value="5" />
