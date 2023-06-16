@@ -173,8 +173,6 @@ class Psi4Interface:
             self.wfn.to_file(self.wfn.get_scratch_filename(180))
             psi4.core.set_local_option('SCF', 'GUESS', 'READ')
         if len(self.chargefield) == 0:
-            print(self.opts)
-            sys.exit()
             (psi4_energy, psi4_wfn) = psi4.energy(
                 self.dft_functional,
                 return_wfn=True,

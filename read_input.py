@@ -353,7 +353,7 @@ class QMMMSetup:
         ff_xml_list = ff_xml_file.split(',')
         ff_xml_list = [ffdir +'/'+ff_file for ff_file in ff_xml_list]
 
-        self.mm = OpenMMInterface(self.pdb_file, self.residue_xml_list, ff_xml_list, platform, self.qm_atoms)
+        self.mm = OpenMMInterface(ffdir+'/'+self.pdb_file, self.residue_xml_list, ff_xml_list, platform, self.qm_atoms)
 
     def _qm_settings(self):
         ################ Block for settings for Psi4 Interface ################
@@ -386,23 +386,33 @@ class QMMMSetup:
         simulation_settings = self.settings["Simulation_Settings"]
 
         self.simulation_settings_formatted = {}
+        self.tmp_dir = simulation_settings["tmp_dir"]
         self.name = simulation_settings["name"]
         self.jobtype = simulation_settings.get("jobtype", None)
-        time_step, num_steps = float(simulation_settings["time_step"]), int(simulation_settings["num_steps"])
-        temp, temp_init = float(simulation_settings["temp"]), float(simulation_settings["temp_init"])
-        remove_rotation, remove_translation = simulation_settings["remove_rotation"] == "True", simulation_settings["remove_translation"] == "True"
-        #Frequency to write output files
-        write_freq = int(simulation_settings["write_freq"])
-
-        self.simulation_settings_formatted["name"] = self.name
-        self.simulation_settings_formatted["ensemble"] = simulation_settings["ensemble"]
-        self.simulation_settings_formatted["time_step"] = time_step
-        self.simulation_settings_formatted["num_steps"] = num_steps
-        self.simulation_settings_formatted["temp"] = temp
-        self.simulation_settings_formatted["temp_init"] = temp_init
-        self.simulation_settings_formatted["remove_rotation"] = remove_rotation
-        self.simulation_settings_formatted["remove_translation"] = remove_translation
-        self.simulation_settings_formatted["write_freq"] = write_freq
+        if self.jobtype == "single_point":
+            self.simulation_settings_formatted["jobtype"] = self.jobtype
+            stride = simulation_settings["stride"]
+            self.simulation_settings_formatted["atoms"] = read(simulation_settings["atoms"], index=f"::{stride}")
+        else:
+            time_step, num_steps = float(simulation_settings["time_step"]), int(simulation_settings["num_steps"])
+            temp, temp_init = float(simulation_settings["temp"]), float(simulation_settings["temp_init"])
+            remove_rotation, remove_translation = simulation_settings["remove_rotation"] == "True", simulation_settings["remove_translation"] == "True"
+            #Frequency to write output files
+            write_freq = int(simulation_settings["write_freq"])
+            self.atoms = simulation_settings["atoms"]
+            self.restart = simulation_settings.get("restart", "False")
+            self.restart = self.restart == "True"
+            self.rewrite = False if self.restart else True
+            self.simulation_settings_formatted["name"] = self.name
+            self.simulation_settings_formatted["ensemble"] = simulation_settings["ensemble"]
+            self.simulation_settings_formatted["time_step"] = time_step
+            self.simulation_settings_formatted["num_steps"] = num_steps
+            self.simulation_settings_formatted["temp"] = temp
+            self.simulation_settings_formatted["temp_init"] = temp_init
+            self.simulation_settings_formatted["remove_rotation"] = remove_rotation
+            self.simulation_settings_formatted["remove_translation"] = remove_translation
+            self.simulation_settings_formatted["write_freq"] = write_freq
+            self.simulation_settings_formatted["restart"] = self.restart
 
     def _database_settings(self):
         ############## Block for storing structures and other data during a QM/MM MD simulation ##########
@@ -426,7 +436,7 @@ class QMMMSetup:
 
             graph_reorder = GraphReorder(omm_topology, reacting_atoms, accepting_atoms, diabat_residues=diabat_residues)
             #Class that stores data during QM/MM simulation
-            self.db_builder = NNDataBaseBuilder(pdb_files, graph_reorder, self.qm_atoms, self.name, save_frq, mode)
+            self.db_builder = NNDataBaseBuilder(pdb_files, graph_reorder, self.qm_atoms, self.tmp_dir, save_frq, mode)
         
         else:
             self.db_builder = None
@@ -443,8 +453,7 @@ class QMMMSetup:
             Dictionary with the QMMM settings contained
         """
         #Instantiate the QM/MM system object.
-        self.qmmm = QMMMEnvironment(self.pdb_file, self.name, self.mm, self.qm, self.qm_atoms, self.embedding_cutoff, plumed_command=self.plumed_command, dataset_builder=self.db_builder)
-
+        self.qmmm = QMMMEnvironment(self.atoms, self.tmp_dir, self.mm, self.qm, self.qm_atoms, self.embedding_cutoff, plumed_command=self.plumed_command, dataset_builder=self.db_builder, rewrite_log=self.rewrite)
         return self.qmmm, self.simulation_settings_formatted
 
 class TrainSetup:
@@ -466,10 +475,7 @@ class TrainSetup:
         self.train_db = self.train_settings["train_db"]
         self.train_dir = self.train_settings["train_dir"]
         data_stride = self.train_settings["data_stride"].split(',')
-        if len(data_stride) > 1:
-            self.data_stride = [int(i) for i in data_stride]
-        else:
-            self.data_stride = int(data_stride[0])
+        self.data_stride = [int(i) for i in data_stride]
   
         #Determine whether to rebuild database or use a currently constructed database
         self.use_current_db = self.train_settings["use_current_db"] == "True"
@@ -539,12 +545,16 @@ class TrainSetup:
 
         #Either PaiNN or SchNet neural network representation
         representation = self.train_settings.get("representation", "PaiNN")
-        
-        #Lists for the energy and forces
-        energy, forces = [], []
+      
+        db_files = self.train_db.split(',')
         #Read database
-        data, energy, forces, e_potential, e_field = get_data(self.train_db, energy, forces, shift, energy_units=energy_units, forces_units=forces_units, stride=self.data_stride)
-
+        data, energy, forces, e_potential, e_field = get_data(db_files, 
+                shift, 
+                energy_units=energy_units, 
+                forces_units=forces_units, 
+                data_stride=self.data_stride
+                )
+        
         #Train_NNIntra object
         nnintra_train = Train_NNIntra(
             data,

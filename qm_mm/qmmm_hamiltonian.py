@@ -188,8 +188,8 @@ class QMMMHamiltonian(Calculator):
                     dc_energy += 2625.5 * q_prod * dr**-1
         
         total_energy = openmm_energy + psi4_energy - dc_energy
-
-        self.log_energy(atoms, psi4_energy, dc_energy, total_energy)
+        if hasattr(self, 'logger'):
+            self.log_energy(atoms, psi4_energy, dc_energy, total_energy)
 
         self.frame += 1
         result["energy"] = total_energy * self.energy_units

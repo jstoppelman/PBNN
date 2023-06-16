@@ -157,8 +157,6 @@ class Plumed(Calculator):
         energy_bias, forces_bias = broadcast(ener_forc)
         energy = unbiased_energy + energy_bias
         forces = unbiased_forces + forces_bias
-        print(forces)
-        sys.exit()
         return energy, forces
 
     def compute_bias(self, pos, istep, unbiased_energy):

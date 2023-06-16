@@ -16,6 +16,7 @@ import ase.md
 import ase.md.velocitydistribution as ase_md_veldist
 import ase.optimize
 from ase import units
+from ase.calculators.singlepoint import SinglePointDFTCalculator
 
 from .qmmm_hamiltonian import *
 from .logger import Logger
@@ -73,6 +74,8 @@ class QMMMEnvironment:
         # Define Atoms object.
         if isinstance(atoms, ase.Atoms):
             self.atoms = atoms
+        elif isinstance(atoms, list):
+            self.atoms = atoms[-1]
         else:
             self.atoms = ase.io.read(atoms)
 
@@ -91,7 +94,7 @@ class QMMMEnvironment:
         # create residue_atom_lists using mask_freeze_atoms
         self.openmm_interface.set_residue_atom_lists( openmm_interface.mask_freeze_atoms )
         self._residue_atom_lists = self.openmm_interface.get_residue_atom_lists()
-
+    
         # Collect Psi4 interface and set qm_atoms_list
         self.psi4_interface = psi4_interface
         self.psi4_interface.set_qm_atoms_list(qm_atoms_list)
@@ -102,7 +105,6 @@ class QMMMEnvironment:
         self.qm_atoms_list = qm_atoms_list
         self.embedding_cutoff = embedding_cutoff
         self.rewrite = rewrite_log
-
         self.dataset_builder = dataset_builder
 
     def create_system(self, name, time_step=1.0, temp=300, temp_init=None,
@@ -143,11 +145,12 @@ class QMMMEnvironment:
         # Set initial simulation options.
         if temp_init is None:
             temp_init = temp
-        ase_md_veldist.MaxwellBoltzmannDistribution(
-            self.atoms,
-            temp_init * ase.units.kB,
-            rng=np.random.default_rng(seed=42),
-        )
+        if restart:
+            ase_md_veldist.MaxwellBoltzmannDistribution(
+                self.atoms,
+                temp_init * ase.units.kB,
+                rng=np.random.default_rng(seed=42),
+            )
         if remove_translation:
             ase_md_veldist.Stationary(self.atoms)
         if remove_rotation:
@@ -205,6 +208,7 @@ class QMMMEnvironment:
         
         self.atoms.set_calculator(self.calculator)
         
+        self.name = name       
         # Determine ouput files for simulation.
         log_file = os.path.join(self.tmp, "{}.log".format(name))
         traj_file = os.path.join(self.tmp, "{}.dcd".format(name))
@@ -225,7 +229,7 @@ class QMMMEnvironment:
             self.atoms.calc.logger = logger
         
         self.openmm_interface.logger = logger
-        self.openmm_interface.generate_reporter(traj_file)
+        self.openmm_interface.generate_reporter(traj_file, append=restart)
 
     def write_atoms(self, name, ftype="xyz", append=False):
         """
@@ -259,6 +263,41 @@ class QMMMEnvironment:
         forces = self.atoms.get_forces()
         return energy, forces
 
+    def run_test(self, atoms):
+        self.openmm_interface.create_subsystem()
+
+        self.atoms.set_masses(self.openmm_interface.get_masses())
+        self.atoms.charges = self.openmm_interface.get_charges()
+
+        self.openmm_interface.set_positions(self.atoms.get_positions())
+
+        self.psi4_interface.set_charges(self.openmm_interface.get_charges())
+        mm_atoms_list = self.openmm_interface.get_mm_atoms_list()
+
+        calculator = QMMMHamiltonian(self.openmm_interface, self.psi4_interface,
+                                    self.qm_atoms_list, mm_atoms_list, self.embedding_cutoff,
+                                    self._residue_atom_lists, False, database_builder=self.dataset_builder)
+
+        self.atoms.set_calculator(calculator)
+
+        #traj_file = os.path.join(self.tmp, "{}.dcd".format(name))
+        traj = []
+        for frame in atoms:
+            self.atoms = frame
+            self.atoms.set_masses(self.openmm_interface.get_masses())
+            self.atoms.charges = self.openmm_interface.get_charges()
+
+            self.atoms.set_calculator(calculator)
+            energy, forces = self.calculate_single_point()
+            energy *= 96.487
+            forces *= 96.487
+
+            calc = SinglePointDFTCalculator(frame, energy=energy, forces=forces)
+            frame.calc = calc
+            traj.append(frame)
+
+        ase.io.write(f"{self.tmp}.traj", traj)
+
     def run_md(self, steps):
         """
         Run MD simulation.
@@ -270,6 +309,7 @@ class QMMMEnvironment:
         """
         for step in range(steps):
             self.md.run(1)
+            self.write_atoms(self.name, ftype='traj')
 
     def optimize(self, fmax=1.0e-2, steps=1000):
         """

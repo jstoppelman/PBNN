@@ -448,9 +448,10 @@ class OpenMMInterface:
         
         self.mm_energy = mm_energy
         self.mm_forces = mm_forces
-        self.simmd_mm.reporters[0].report(self.simmd_mm, state)
+        if self.simmd_mm.reporters:
+            self.simmd_mm.reporters[0].report(self.simmd_mm, state)
         
-        self.log_energy(mm_energy)
+            self.log_energy(mm_energy)
 
     def compute_lj_energy(self):
         """
@@ -504,7 +505,7 @@ class OpenMMInterface:
         openmm_forces = np.add(self.mm_forces, self.lj_forces) / 10.0
         return openmm_energy, openmm_forces
 
-    def generate_reporter(self, name):
+    def generate_reporter(self, name, append=False):
         """
         Creates a trajectory reporter.
 
@@ -515,7 +516,7 @@ class OpenMMInterface:
         """
         self.simmd_mm.reporters = []
         self.simmd_mm.reporters.append(
-            openmm.app.DCDReporter(name, 2),
+            openmm.app.DCDReporter(name, 2, append=append),
         )
 
     def log_energy(self, mm_energy):
