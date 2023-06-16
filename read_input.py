@@ -392,7 +392,10 @@ class QMMMSetup:
         if self.jobtype == "single_point":
             self.simulation_settings_formatted["jobtype"] = self.jobtype
             stride = simulation_settings["stride"]
-            self.simulation_settings_formatted["atoms"] = read(simulation_settings["atoms"], index=f"::{stride}")
+            self.atoms = read(simulation_settings["atoms"], index=f"::{stride}")
+            self.simulation_settings_formatted["atoms"] = self.atoms
+            self.simulation_settings_formatted["name"] = self.name
+            self.rewrite = True
         else:
             time_step, num_steps = float(simulation_settings["time_step"]), int(simulation_settings["num_steps"])
             temp, temp_init = float(simulation_settings["temp"]), float(simulation_settings["temp_init"])
@@ -1407,9 +1410,10 @@ class ReadSettingsQMMM(ReadSettings):
         for child in self.root:
             if child.tag == "OpenMM_Settings":
                 omm_settings = self._read_general_settings(child)
-                
+              
+                ffdir = omm_settings["ffdir"]
                 #From the residues labeled as the QM active site residues, get the atom indices
-                traj = md.load(omm_settings["pdb_file"])
+                traj = md.load(ffdir+"/"+omm_settings["pdb_file"])
                 qm_residues = omm_settings["qm_residues"].split(',')
                 atoms = []
                 for res in qm_residues:

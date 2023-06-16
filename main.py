@@ -33,32 +33,40 @@ def main():
         qm_mm_setup = QMMMSetup(settings)
 
         #qm_mm is the ASE object, simulation_settings is one of the dictionaries produced from the xml input file 
-        qm_mm, simulation_settings= qm_mm_setup.get_qmmm()
-        name, ensemble, time_step, write_freq = simulation_settings["name"], simulation_settings["ensemble"], simulation_settings["time_step"], simulation_settings["write_freq"]
+        qm_mm, simulation_settings = qm_mm_setup.get_qmmm()
         
-        num_steps = simulation_settings["num_steps"]
+        jobtype = simulation_settings.get("jobtype", None)
+        if jobtype == "single_point":
+            atoms = simulation_settings["atoms"]
 
-        #Gets friction for Langevin dynamics
-        friction = simulation_settings.get("friction", None)
+            qm_mm.run_test(atoms)
 
-        temp, temp_init = simulation_settings["temp"], simulation_settings["temp_init"]
+        else:
+            name, ensemble, time_step, write_freq = simulation_settings["name"], simulation_settings["ensemble"], simulation_settings["time_step"], simulation_settings["write_freq"]
+            
+            num_steps = simulation_settings["num_steps"]
 
-        remove_translation, remove_rotation = simulation_settings["remove_translation"], simulation_settings["remove_rotation"]
+            #Gets friction for Langevin dynamics
+            friction = simulation_settings.get("friction", None)
 
-        #Sets up QM/MM MD simulation
-        qm_mm.create_system(name, 
-                ensemble=ensemble, 
-                time_step=time_step, 
-                write_freq=write_freq, 
-                friction=0.005,
-                temp=temp,
-                temp_init=temp_init,
-                remove_translation=remove_translation,
-                remove_rotation=remove_rotation,
-                embed_electrode=False)
-        
-        #Run simulation
-        qm_mm.run_md(num_steps)
+            temp, temp_init = simulation_settings["temp"], simulation_settings["temp_init"]
+
+            remove_translation, remove_rotation = simulation_settings["remove_translation"], simulation_settings["remove_rotation"]
+
+            #Sets up QM/MM MD simulation
+            qm_mm.create_system(name, 
+                    ensemble=ensemble, 
+                    time_step=time_step, 
+                    write_freq=write_freq, 
+                    friction=0.005,
+                    temp=temp,
+                    temp_init=temp_init,
+                    remove_translation=remove_translation,
+                    remove_rotation=remove_rotation,
+                    embed_electrode=False)
+            
+            #Run simulation
+            qm_mm.run_md(num_steps)
 
     #Used for training all NN models
     elif jobtype == "Train":
