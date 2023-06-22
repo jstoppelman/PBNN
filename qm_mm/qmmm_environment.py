@@ -288,13 +288,16 @@ class QMMMEnvironment:
             self.atoms.charges = self.openmm_interface.get_charges()
 
             self.atoms.set_calculator(calculator)
-            energy, forces = self.calculate_single_point()
-            energy *= 96.487
-            forces *= 96.487
-
-            calc = SinglePointDFTCalculator(frame, energy=energy, forces=forces)
-            frame.calc = calc
-            traj.append(frame)
+            try:
+                energy, forces = self.calculate_single_point()
+                energy *= 96.487
+                forces *= 96.487
+    
+                calc = SinglePointDFTCalculator(frame, energy=energy, forces=forces)
+                frame.calc = calc
+                traj.append(frame)
+            except:
+                print("Calculation failed")
 
         ase.io.write(f"{self.tmp}.traj", traj)
 

@@ -60,7 +60,8 @@ class Psi4Interface:
                          'dft_spherical_points': self.dft_spherical_points,
                          'dft_radial_points': self.dft_radial_points,
                          'scf_type': self.scf_type,
-                         'dft_pruning_scheme': pruning }
+                         'dft_pruning_scheme': pruning,
+                         'maxiter': 20}
 
         else:
             self.opts = {'basis': self.basis,

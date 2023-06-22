@@ -392,7 +392,8 @@ class QMMMSetup:
         if self.jobtype == "single_point":
             self.simulation_settings_formatted["jobtype"] = self.jobtype
             stride = simulation_settings["stride"]
-            self.atoms = read(simulation_settings["atoms"], index=f"::{stride}")
+            start = simulation_settings.get("start_idx", 0)
+            self.atoms = read(simulation_settings["atoms"], index=f"{start}::{stride}")
             self.simulation_settings_formatted["atoms"] = self.atoms
             self.simulation_settings_formatted["name"] = self.name
             self.rewrite = True
