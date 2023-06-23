@@ -43,7 +43,7 @@ class Train_NN:
             if there are previous SchNet log/checkpoints, determines whether to use these to reinitialize training (default is False)
         """
         self.data = data
-        self.energy = energy
+        self.energy = np.asarray(energy)
         self.energy = self.energy.reshape(self.energy.shape[0], 1)
         self.forces = forces
         if name is None:
@@ -95,9 +95,10 @@ class Train_NNIntra(Train_NN):
             ff_energy.append(omm_energy)
             ff_forces.append(omm_forces)
         
-        ff_energy = np.asarray(ff_energy)[:,None]
+        ff_energy = np.asarray(ff_energy)
+        ff_energy = ff_energy.reshape(ff_energy.shape[0], 1)
         ff_forces = np.asarray(ff_forces)
-        self.energy = np.asarray(self.energy)[:,None]
+        self.energy = np.asarray(self.energy)
         self.energy -= ff_energy
 
         if len(self.forces):

@@ -1,0 +1,47 @@
+<Settings>
+  <!--We need to add a Morse potential, so we set up the OpenMM_Settings tag
+      This can be removed if the molecule does not have a dissociating bond!-->
+   <OpenMM_Settings>
+       <ffdir dir="ffdir_pbnn" />
+       <pdb_file file="ch3cl_monomer.pdb" />
+       <ff_file file="SN2_no_intra_pbnn.xml" />
+       <res_file file="SN2_residues.xml" />
+       <platform platform="CPU" />
+       <qm_residues residue="0" />
+   </OpenMM_Settings>
+   <Train_Settings>
+       <!-- specify intra for NN train type!-->
+       <train_type name="intra"/>
+       <train_name name="ch3cl"/>
+       <train_db name="qmmm_intra_output.traj"/>
+       <train_dir name="lightning_logs_nnintra"/>
+       <energy_units name="kJ/mol"/>
+       <forces_units name="kJ/mol/A"/>
+       <!--Ground state electronic energy!-->
+       <shift shift="-1312383.673157087" />
+       <!--Get every nth item from the traj file!-->
+       <data_stride value="1"/>
+       <!--Don't add data, reload previous db!-->
+       <use_current_db value="False"/>
+       <!--Continue with previously made train val split files!-->
+       <continue_train value="False"/>
+       <!--Still in development, but eventually you can add data to the database!-->
+       <add_data value="False"/>
+   </Train_Settings>
+   <!--Set up settings for adding a Fermi-Dirac damping function. The form is 
+        1/(e^{beta*(r-mu)}+1)!-->
+   <FD_Damping_Settings>
+     <damping_position>
+       <mu value="4.25"/>
+     </damping_position>
+     <damping_beta>
+       <beta value="30.0"/>
+     </damping_beta>
+     <reacting_atom_parent>
+       <atom index="0" />
+     </reacting_atom_parent>
+     <reacting_atom_dissoc>
+        <atom index="4" />
+     </reacting_atom_dissoc>
+   </FD_Damping_Settings>
+</Settings>

@@ -1,0 +1,24 @@
+<Settings>
+   <OpenMM_Settings>
+       <ffdir dir="ffdir_pbnn" />
+       <ff_file file="SN2_no_intra_pbnn.xml" />
+       <res_file file="SN2_residues.xml" />
+       <pbnn_res value="0"/>
+       <platform platform="OpenCL" />
+   </OpenMM_Settings>
+   <PBNN_Settings>
+       <jobtype name="NNIntra"/>
+       <name name="nnintra"/>
+       <ffdir dir="ffdir_pbnn" />
+       <pdb_file file="ch3cl_monomer.pdb" />
+       <atoms fname="pbnn_test_data.traj"/>
+       <energy_units name="kJ/mol"/>
+       <forces_units name="kJ/mol/A"/>
+       <data_stride value="1"/> 
+       <tmp_dir name="test_dir"/>
+       <shift shift="-1312383.673157087" />
+   </PBNN_Settings>
+   <NNIntra_Settings>
+       <nn_model fname='ch3cl_model' residue="0" damping_parent="0" damping_dissoc="4"/>
+   </NNIntra_Settings>
+</Settings>

@@ -30,13 +30,17 @@ class TestComponent:
         """
         Compute Calculator energies and forces and save npy arrays
         """
-
+        test_energy = []
         test_forces = []
         for i, frame in enumerate(self.data):
             print(f"Structure {i+1}/{len(self.data)}")
             frame.calc = self.calc
+            energy = frame.get_potential_energy()
+            test_energy.append(energy)
             forces = frame.get_forces()
             test_forces.append(forces)
 
+        np.save(f"ref_energy_{self.name}.npy", self.energy)
+        np.save(f"test_energy_{self.name}.npy", np.asarray(test_energy))
         np.save(f"ref_forces_{self.name}.npy", self.forces)
         np.save(f"test_forces_{self.name}.npy", np.asarray(test_forces))
