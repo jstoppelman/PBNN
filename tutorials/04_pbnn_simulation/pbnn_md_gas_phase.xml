@@ -1,0 +1,79 @@
+<Settings>
+   <OpenMM_Settings>
+       <ffdir dir="ffdir_pbnn" />
+       <pdb_file file="diabat1.pdb" />
+       <ff_file file="SN2_no_intra_pbnn.xml" />
+       <res_file file="SN2_residues.xml" />
+       <pbnn_res value="0,1" />
+       <platform platform="OpenCL" />
+   </OpenMM_Settings>
+   <PBNN_Settings>
+       <jobtype name="MD" />
+       <name name="ch3cl" />
+       <atoms name="ch3cl2_0.xyz" />
+       <energy_units name="kJ/mol" />
+       <forces_units name="kJ/mol/A" />
+       <tmp_dir name="ch3cl2_gas_phase/window_0" />
+       <ensemble name="nvt" />
+       <time_step value="1.0" />
+       <num_steps value="100" />
+       <temp value="300" />
+       <temp_init value="300" />
+       <friction value="0.001" />
+       <remove_rotation value="True" />
+       <remove_translation value="True" />
+       <write_freq value="10" />
+   </PBNN_Settings>
+   <Plumed_Settings>
+       <plumed_file file="plumed_command_gas_phase.txt" />
+   </Plumed_Settings>
+   <Diabat_Settings>
+     <PDB_file>
+         <pdb_file file="diabat1.pdb" />
+     </PDB_file>
+     <Graph_Settings>
+       <reacting_atom_index index="4,5" />
+       <accepting_atom_index index="0" />
+       <diabat_residues index="0,1" />
+     </Graph_Settings>
+     <NNIntra_Settings>
+       <nn_model fname="ch3cl_model" residue="0" damping_parent="0" damping_dissoc="4" />
+     </NNIntra_Settings>
+     <NNInter_Settings>
+         <nn_model fname="best_model_inter_d1" residue="0,1" damping_parent="0" damping_dissoc="4" />
+     </NNInter_Settings> 
+     <React_Atom>
+         <residue value="0"/>
+         <atom_index value="4"/>
+     </React_Atom>
+     <Shift>
+         <shift value="0" />
+     </Shift>
+  </Diabat_Settings>
+  <Diabat_Settings>
+     <PDB_file>
+         <pdb_file file="diabat2.pdb" />
+     </PDB_file>
+     <Graph_Settings>
+       <reacting_atom_index index="0,5" />
+       <accepting_atom_index index="1" />
+       <diabat_residues index="0,1" />
+     </Graph_Settings>
+     <NNIntra_Settings>
+       <nn_model fname="ch3cl_model" residue="1" damping_parent="0" damping_dissoc="4" />
+     </NNIntra_Settings>
+     <NNInter_Settings>
+         <nn_model fname="best_model_inter_d2" residue="0,1" damping_parent="1" damping_dissoc="5" /> 
+     </NNInter_Settings>
+     <React_Atom>
+         <residue value="1"/>
+         <atom_index value="5"/>
+     </React_Atom>
+     <Shift>
+      <shift value="0" />
+     </Shift>
+   </Diabat_Settings>
+   <Coupling_Settings>
+    <nn_model fname="best_model_hij" coupling_loc="0,1" residues="0,1" damping_parent="0" damping_dissoc="4" damping_parent_product="0" damping_dissoc_product="5" />
+   </Coupling_Settings>
+</Settings>

@@ -171,10 +171,14 @@ class QMMMHamiltonian(Calculator):
                     total_forces[atom] -= co_forces
                 j += 1
 
-        e_potential_total = np.asarray(e_potential_total)
-        e_potential_total = e_potential_total.sum(axis=0)
-        e_field_total = np.asarray(e_field_total)
-        e_field_total = e_field_total.sum(axis=0)
+        if len(e_potential_total):
+            e_potential_total = np.asarray(e_potential_total)
+            e_potential_total = e_potential_total.sum(axis=0)
+            e_field_total = np.asarray(e_field_total)
+            e_field_total = e_field_total.sum(axis=0)
+        else:
+            e_potential_total = np.zeros(len(atoms))
+            e_field_total = np.zeros((len(atoms), 3))
         
         # now remove double counting energy from electrode embedding.  Forces can be ignored because electrode atoms are frozen...
         if self.embed_electrode:

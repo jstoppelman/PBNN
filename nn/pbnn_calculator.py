@@ -551,7 +551,7 @@ class PBNN_Interface:
         """
         Assemble forces from PBNN and save reference forces to a npy file
         """
-
+        test_energy = []
         test_forces = []
         
         for i, atoms in enumerate(self.data):
@@ -629,10 +629,16 @@ class PBNN_Interface:
             #Convert to kj/mol
             energy *= 96.486
             forces *= 96.486
+            test_energy.append(energy)
             test_forces.append(forces)
 
+        test_energy = np.asarray(test_energy)
+        self.energy = np.asarray(self.energy)
         test_forces = np.asarray(test_forces)
         self.forces = np.asarray(self.forces)
+
+        test_energy = test_energy.reshape(test_energy.shape[0], 1)
+        self.energy = self.energy.reshape(self.energy.shape[0], 1)
         test_forces = test_forces.reshape(test_forces.shape[0], test_forces.shape[1]*3)
         self.forces = self.forces.reshape(self.forces.shape[0], self.forces.shape[1]*3)
         
@@ -640,8 +646,11 @@ class PBNN_Interface:
             fname = f'{self.name}'
         else:
             fname = 'test'
-        np.save(f"ref_{fname}.npy", self.forces)
-        np.save(f"pbnn_{fname}.npy", test_forces)
+
+        np.save(f"ref_{fname}_energy.npy", self.energy)
+        np.save(f"test_{fname}_energy.npy", test_energy)
+        np.save(f"ref_{fname}_forces.npy", self.forces)
+        np.save(f"test_{fname}_forces.npy", test_forces)
 
     def run_md(self, steps):
         """
@@ -654,10 +663,5 @@ class PBNN_Interface:
         """
         for i in range(steps):
             self.md.run(1)
-            if i % 1000 == 0 and i != 0:
-                traj = read(self.trajfile, index="-1000:")
-                write(self.tmp+'/'+"ch3cl_old.traj", traj)
-                trajectory = Trajectory(self.trajfile, "w", self.md.atoms)
-                self.md.observers[1] = (trajectory.write, 1, (), {}) 
 
 

@@ -1,0 +1,109 @@
+<Settings>
+   <OpenMM_Settings>
+       <ffdir dir="ffdir_pbnn" />
+       <pdb_file file="diabat1.pdb" />
+       <ff_file file="SN2_no_intra_pbnn.xml" />
+       <res_file file="SN2_residues.xml" />
+       <platform platform="OpenCL" />
+       <!--Residues in the reacting complex!-->
+       <pbnn_res value="0,1"/>
+   </OpenMM_Settings>
+   <Train_Settings>
+       <!-- Select this training type for fitting the Inter NN and the H12 NN simultaneously!-->
+       <train_type name="qmmm_fit"/>
+       <train_name name="qmmm_fit"/>
+       <train_db name="ch3cl2_train.db"/>
+       <train_dir name="lightning_logs_qmmm_fit"/>
+       <!--Units the dataset is in. Note the code always assumes angstrom for positions!-->
+       <energy_units name="kJ/mol"/>
+       <forces_units name="kJ/mol/A"/>
+       <data_stride value="1"/>
+       <use_current_db value="False"/>
+       <continue_train value="False"/>
+       <add_data value="False"/>
+   </Train_Settings>
+   <Diabat_Settings>
+     <PDB_file>
+         <!--File containing definition of isolated molecules in diabat 1!-->
+         <pdb_file file="diabat1.pdb"/>
+     </PDB_file>
+     <Graph_Settings>
+       <!--The indices of all atoms that can react in diabat 1!-->
+       <reacting_atom_index index='4,5' />
+       <!--The indices of all atoms that can accept the reacting molecules in diabat 1!-->
+       <accepting_atom_index index='0' />
+       <!--Residue inidces of the molecules that make up the reacting complex!-->
+       <diabat_residues index="0,1"/>
+     </Graph_Settings>
+     <NNIntra_Settings>
+       <!-- Name the atoms making up the Fermi-Dirac function in damping_parent and damping_dissoc!-->
+       <nn_model fname='ch3cl_model' residue="0" damping_parent="0" damping_dissoc="4"/>
+     </NNIntra_Settings>
+     <FD_Damping_Settings>
+       <damping_position>
+        <mu value="4.0"/>
+       </damping_position>
+       <damping_beta>
+        <beta value="30.0"/>
+       </damping_beta>
+       <reacting_atom_parent>
+        <atom index="0" />
+       </reacting_atom_parent>
+       <reacting_atom_dissoc>
+        <atom index="4" />
+       </reacting_atom_dissoc>
+     </FD_Damping_Settings>
+     <Shift>
+         <!--Sum of relaxed CH3Cl and Cl- energies at infinite separation!-->
+         <shift value="-2520388.308717081"/>
+     </Shift>
+  </Diabat_Settings>
+  <Diabat_Settings>
+     <PDB_file>
+         <!--File containing definition of isolated molecules in diabat 2!-->
+         <pdb_file file="diabat2.pdb"/>
+     </PDB_file>
+     <Graph_Settings>
+       <reacting_atom_index index='0,5' />
+       <accepting_atom_index index='1' />
+       <diabat_residues index="0,1"/>
+     </Graph_Settings>
+     <NNIntra_Settings>
+       <!-- Name the atoms making up the Fermi-Dirac function in damping_parent and damping_dissoc!-->
+       <nn_model fname='ch3cl_model' residue="1" damping_parent="0" damping_dissoc="4"/>
+     </NNIntra_Settings>
+     <FD_Damping_Settings>
+       <damping_position>
+        <mu value="4.0"/>
+       </damping_position>
+       <damping_beta>
+        <beta value="30.0"/>
+       </damping_beta>
+       <reacting_atom_parent>
+        <atom index="1" />
+       </reacting_atom_parent>
+       <reacting_atom_dissoc>
+        <atom index="5" />
+       </reacting_atom_dissoc>
+     </FD_Damping_Settings>
+     <FD_Damping_Settings_Coupling>
+       <damping_position>
+        <mu value="4.0"/>
+       </damping_position>
+       <damping_beta>
+        <beta value="30.0"/>
+       </damping_beta>
+       <reacting_atom_parent>
+        <atom index="0" />
+       </reacting_atom_parent>
+       <reacting_atom_dissoc>
+        <atom index="5" />
+       </reacting_atom_dissoc>
+     </FD_Damping_Settings_Coupling>
+     <Shift>
+      <!--Difference of the sum of Diabat 2 monomer energies at infinite separation and Diabat1 monomer energies at infinite separation
+          Here it is 0!-->
+      <shift value="0"/>
+    </Shift>
+  </Diabat_Settings>
+</Settings>

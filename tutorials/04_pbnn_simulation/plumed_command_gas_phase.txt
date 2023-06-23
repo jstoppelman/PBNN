@@ -1,0 +1,5 @@
+d12: DISTANCE ATOMS=1,5
+d13: DISTANCE ATOMS=1,6
+diff: CUSTOM ARG=d12,d13 FUNC=x-y PERIODIC=NO
+restraint: RESTRAINT ARG=diff AT=0.0 KAPPA=75000.0
+PRINT ARG=d12,d13,diff,restraint.bias FILE=ch3cl2_gas_phase/window_0/colvar.dat

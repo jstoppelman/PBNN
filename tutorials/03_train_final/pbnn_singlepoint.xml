@@ -1,0 +1,71 @@
+<Settings>
+   <OpenMM_Settings>
+       <ffdir dir="ffdir_pbnn" />
+       <pdb_file file="diabat1.pdb" />
+       <ff_file file="SN2_no_intra_pbnn.xml" />
+       <res_file file="SN2_residues.xml" />
+       <cutoff value="1.4"/>
+       <pbnn_res value="0,1"/>
+       <platform platform="OpenCL" />
+   </OpenMM_Settings>
+   <PBNN_Settings>
+       <!-- Can enter in Test or MD for jobtype !-->
+       <jobtype name="Test"/>
+       <name name="pbnn"/>
+       <atoms fname="pbnn_test_data.traj"/>
+       <energy_units name="kJ/mol"/>
+       <forces_units name="kJ/mol/A"/>
+       <data_stride value="1"/> 
+       <tmp_dir name="pbnn_test"/>
+   </PBNN_Settings>
+   <Diabat_Settings>
+     <PDB_file>
+         <pdb_file file="diabat1.pdb"/>
+     </PDB_file>
+     <Graph_Settings>
+       <reacting_atom_index index='4,5' />
+       <accepting_atom_index index='0' />
+       <diabat_residues index="0,1"/>
+     </Graph_Settings>
+     <NNIntra_Settings>
+       <nn_model fname='ch3cl_model' residue="0" damping_parent="0" damping_dissoc="4"/>
+     </NNIntra_Settings>
+     <NNInter_Settings>
+       <nn_model fname="best_model_inter_d1" residue="0,1" damping_parent="0" damping_dissoc="4"/>
+     </NNInter_Settings>
+     <React_Atom>
+         <residue value="0"/>
+         <atom_index value="4"/>
+     </React_Atom>
+     <Shift>
+         <shift value="0"/>
+     </Shift>
+  </Diabat_Settings>
+  <Diabat_Settings>
+     <PDB_file>
+         <pdb_file file="diabat2.pdb"/>
+     </PDB_file>
+     <Graph_Settings>
+       <reacting_atom_index index='0,5' />
+       <accepting_atom_index index='1' />
+       <diabat_residues index="0,1"/>
+     </Graph_Settings>
+     <NNIntra_Settings>
+       <nn_model fname='ch3cl_model' residue="1" damping_parent="0" damping_dissoc="4"/>
+     </NNIntra_Settings>
+     <NNInter_Settings>
+         <nn_model fname="best_model_inter_d2" residue="0,1" damping_parent="1" damping_dissoc="5"/>
+     </NNInter_Settings>
+     <React_Atom>
+         <residue value="1"/>
+         <atom_index value="5"/>
+     </React_Atom>
+     <Shift>
+      <shift value="0"/>
+     </Shift>
+   </Diabat_Settings>
+   <Coupling_Settings>
+    <!--Two sets of damping functions for reactant and product, so enter the atoms making up both damping functions here!-->
+    <nn_model fname="best_model_hij" coupling_loc="0,1" residues="0,1" damping_parent="0" damping_dissoc="4" damping_parent_product="0" damping_dissoc_product="5"/>
+   </Coupling_Settings>
+</Settings>

@@ -19,6 +19,7 @@
        <shift shift="-1312383.673157087" />
    </PBNN_Settings>
    <NNIntra_Settings>
+       <!-- Enter the atoms making up the Fermi-Dirac function in damping_parent and damping_dissoc !-->
        <nn_model fname='ch3cl_model' residue="0" damping_parent="0" damping_dissoc="4"/>
    </NNIntra_Settings>
 </Settings>
