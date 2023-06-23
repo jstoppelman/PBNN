@@ -440,7 +440,7 @@ class QMMMSetup:
 
             graph_reorder = GraphReorder(omm_topology, reacting_atoms, accepting_atoms, diabat_residues=diabat_residues)
             #Class that stores data during QM/MM simulation
-            self.db_builder = NNDataBaseBuilder(pdb_files, graph_reorder, self.qm_atoms, self.tmp_dir, save_frq, mode)
+            self.db_builder = NNDataBaseBuilder(pdb_files, graph_reorder, self.qm_atoms, self.tmp_dir, self.name, save_frq, mode)
         
         else:
             self.db_builder = None

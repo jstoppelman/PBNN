@@ -1,0 +1,59 @@
+PLUMED: PLUMED is starting
+PLUMED: Version: 2.9.0-dev (git: 002821c97) compiled on Jan 19 2022 at 23:13:31
+PLUMED: Please cite these papers when using PLUMED [1][2]
+PLUMED: For further information see the PLUMED web page at http://www.plumed.org
+PLUMED: Root: /home/jstoppelman3/opt/lib/plumed
+PLUMED: For installed feature, see /home/jstoppelman3/opt/lib/plumed/src/config/config.txt
+PLUMED: Molecular dynamics engine: ASE
+PLUMED: Precision of reals: 8
+PLUMED: Running over 1 node
+PLUMED: Number of threads: 1
+PLUMED: Cache line size: 512
+PLUMED: Number of atoms: 6
+PLUMED: File suffix: 
+PLUMED: Timestep: 0.010181
+PLUMED: KbT: 2.494338
+PLUMED: Relevant bibliography:
+PLUMED:   [1] The PLUMED consortium, Nat. Methods 16, 670 (2019)
+PLUMED:   [2] Tribello, Bonomi, Branduardi, Camilloni, and Bussi, Comput. Phys. Commun. 185, 604 (2014)
+PLUMED: Please read and cite where appropriate!
+PLUMED: Finished setup
+PLUMED: Action DISTANCE
+PLUMED:   with label d12
+PLUMED:   between atoms 1 5
+PLUMED:   using periodic boundary conditions
+PLUMED: Action DISTANCE
+PLUMED:   with label d13
+PLUMED:   between atoms 1 6
+PLUMED:   using periodic boundary conditions
+PLUMED: Action CUSTOM
+PLUMED:   with label diff
+PLUMED:   with arguments d12 d13
+PLUMED:   with function : x-y
+PLUMED:   with variables : x y
+PLUMED:   function as parsed by lepton: (x)-(y)
+PLUMED:   derivatives as computed by lepton:
+PLUMED:     1
+PLUMED:     -1
+PLUMED: Action RESTRAINT
+PLUMED:   with label restraint
+PLUMED:   with arguments diff
+PLUMED:   added component to this action:  restraint.bias 
+PLUMED:   at 0.000000
+PLUMED:   with harmonic force constant 75000.000000
+PLUMED:   and linear force constant 0.000000
+PLUMED:   added component to this action:  restraint.force2 
+PLUMED: Action PRINT
+PLUMED:   with label @4
+PLUMED:   with stride 1
+PLUMED:   with arguments d12 d13 diff restraint.bias
+PLUMED:   on file qmmm_output_gas/colvar.dat
+PLUMED:   with format  %f
+PLUMED:                                               Cycles        Total      Average      Minimum      Maximum
+PLUMED:                                                    1     0.004573     0.004573     0.004573     0.004573
+PLUMED: 1 Prepare dependencies                             6     0.000015     0.000002     0.000002     0.000003
+PLUMED: 2 Sharing data                                     6     0.000058     0.000010     0.000008     0.000012
+PLUMED: 3 Waiting for data                                 6     0.000006     0.000001     0.000001     0.000001
+PLUMED: 4 Calculating (forward loop)                       6     0.000121     0.000020     0.000013     0.000050
+PLUMED: 5 Applying (backward loop)                         6     0.000049     0.000008     0.000008     0.000009
+PLUMED: 6 Update                                           6     0.000100     0.000017     0.000013     0.000031

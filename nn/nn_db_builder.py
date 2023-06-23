@@ -9,7 +9,7 @@ class NNDataBaseBuilder:
     """
     Get info from the QMMM class in order to save frames of a simulation
     """
-    def __init__(self, pdb_files, graph_reorder, qm_atoms, sim_dir, save_frq, write_mode):
+    def __init__(self, pdb_files, graph_reorder, qm_atoms, sim_dir, name, save_frq, write_mode):
         """
         pdb_files : list
             List of pdb files for the diabats in PBNN
@@ -28,14 +28,15 @@ class NNDataBaseBuilder:
         self.graph_reorder = graph_reorder
         self.qm_atoms = qm_atoms
         self.sim_dir = sim_dir
+        self.name = name
         self.save_frq = save_frq
         self.write_mode = write_mode
 
         self._get_monomer_indices()
 
         if not os.path.isdir(f"{self.sim_dir}"): os.mkdir(f"{self.sim_dir}")
-        if os.path.isfile(f"{self.sim_dir}/reacting_complex.db") and write_mode == "w": os.remove(f"{self.sim_dir}/reacting_complex.db")
-        self.reacting_complex_database = db.connect(f"{self.sim_dir}/reacting_complex.db")
+        if os.path.isfile(f"{self.sim_dir}/reacting_complex_{self.name}.db") and write_mode == "w": os.remove(f"{self.sim_dir}/reacting_complex_{self.name}.db")
+        self.reacting_complex_database = db.connect(f"{self.sim_dir}/reacting_complex_{self.name}.db")
 
         self.monomer_writers = []
         for i, diabat in enumerate(self.diabat_monomer_indices):

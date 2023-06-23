@@ -2,18 +2,23 @@
 This tutorial teaches how to use the code to 
 build a training dataset for the PBNN model.
 
-Copy build_qm_mm_database.xml, diabat1_solvent.pdb
-and plumed_command_0.txt to the parent directory
+Copy build_qm_mm_database_gas.xml, diabat1.pdb
+build_qm_mm_database_liquid.xml, diabat1_solvent.pdb, 
+plumed_command_gas.txt and plumed_command_liquid.xml 
+to the parent directory
 (containing main.py) and run
 
-python main.py --xml_input build_qm_mm_database.xml
+python main.py --xml_input build_qm_mm_database_gas.xml
+python main.py --xml_input build_qm_mm_database_liquid.xml
 
-Currently this will only run for 5.0 fs for demonstration
+Currently this will only run for 5 time steps for demonstration
 purposes. Change the "num_steps" element under simulation settings
-to run for a longer simulation time.
+in the xml files to run for a longer simulation time.
 
-This simulation will produce a directory called "qmmm_output"
-which we include an example of here. The colvar.dat
+The gas phase simulation will produce a directory called 
+"qmmm_output_gas" and an analogous one for the liquid simulation
+called "qmmm_output_liquid"
+We include examples here. The colvar.dat
 file lists the current value of the CV among other
 info related to Plumed. The files
 
@@ -32,7 +37,7 @@ energy of Cl-. You can use the script "combine_traj.py"
 in this directory to make one trajectory file containing
 the training points for the Ch3Cl monomer.
 
-python combine_traj.py qmmm_output/diabat1_monomer1.traj qmmm_output/diabat2_monomer2.traj ch3cl_monomer.traj
+python combine_traj.py qmmm_output_gas/diabat1_monomer1.traj qmmm_output_gas/diabat2_monomer2.traj qmmm_output_liquid/diabat1_monomer1.traj qmmm_output_liquid/diabat2_monomer2.traj ch3cl_monomer.traj
 
 where the first two arguments to combine_traj.py are
 trajectory files and the last argument is the name 

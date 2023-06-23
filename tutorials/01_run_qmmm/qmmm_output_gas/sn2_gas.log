@@ -1,0 +1,79 @@
+==============================QM/MM/MD Log==============================
+OpenMM Energy:               -49.0 kJ/mol
+|_HarmonicBondForce:           0.0 kJ/mol
+|_HarmonicAngleForce:          0.0 kJ/mol
+|_PeriodicTorsionForce:        0.0 kJ/mol
+|_NonbondedForce:            -49.0 kJ/mol
+|_CustomNonbondedForce:        0.0 kJ/mol
+|_CMMotionRemover:             0.0 kJ/mol
+
+-----------------------------Frame 00000000-----------------------------
+Kinetic Energy:                0.0 kJ/mol
+Psi4 Energy:            -2517287.9 kJ/mol
+Correction Energy:            -0.0 kJ/mol
+Total Energy:           -2517337.0 kJ/mol
+OpenMM Energy:               -49.0 kJ/mol
+|_HarmonicBondForce:           0.0 kJ/mol
+|_HarmonicAngleForce:          0.0 kJ/mol
+|_PeriodicTorsionForce:        0.0 kJ/mol
+|_NonbondedForce:            -49.0 kJ/mol
+|_CustomNonbondedForce:        0.0 kJ/mol
+|_CMMotionRemover:             0.0 kJ/mol
+
+-----------------------------Frame 00000001-----------------------------
+Kinetic Energy:                0.0 kJ/mol
+Psi4 Energy:            -2518066.4 kJ/mol
+Correction Energy:            -0.0 kJ/mol
+Total Energy:           -2518115.5 kJ/mol
+OpenMM Energy:               -49.0 kJ/mol
+|_HarmonicBondForce:           0.0 kJ/mol
+|_HarmonicAngleForce:          0.0 kJ/mol
+|_PeriodicTorsionForce:        0.0 kJ/mol
+|_NonbondedForce:            -49.0 kJ/mol
+|_CustomNonbondedForce:        0.0 kJ/mol
+|_CMMotionRemover:             0.0 kJ/mol
+
+-----------------------------Frame 00000002-----------------------------
+Kinetic Energy:              783.0 kJ/mol
+Psi4 Energy:            -2519196.5 kJ/mol
+Correction Energy:            -0.0 kJ/mol
+Total Energy:           -2518462.4 kJ/mol
+OpenMM Energy:               -49.0 kJ/mol
+|_HarmonicBondForce:           0.0 kJ/mol
+|_HarmonicAngleForce:          0.0 kJ/mol
+|_PeriodicTorsionForce:        0.0 kJ/mol
+|_NonbondedForce:            -49.0 kJ/mol
+|_CustomNonbondedForce:        0.0 kJ/mol
+|_CMMotionRemover:             0.0 kJ/mol
+
+-----------------------------Frame 00000003-----------------------------
+Kinetic Energy:             2094.5 kJ/mol
+Psi4 Energy:            -2519801.3 kJ/mol
+Correction Energy:            -0.0 kJ/mol
+Total Energy:           -2517755.8 kJ/mol
+OpenMM Energy:               -49.0 kJ/mol
+|_HarmonicBondForce:           0.0 kJ/mol
+|_HarmonicAngleForce:          0.0 kJ/mol
+|_PeriodicTorsionForce:        0.0 kJ/mol
+|_NonbondedForce:            -49.0 kJ/mol
+|_CustomNonbondedForce:        0.0 kJ/mol
+|_CMMotionRemover:             0.0 kJ/mol
+
+-----------------------------Frame 00000004-----------------------------
+Kinetic Energy:             2908.2 kJ/mol
+Psi4 Energy:            -2520018.4 kJ/mol
+Correction Energy:            -0.0 kJ/mol
+Total Energy:           -2517159.3 kJ/mol
+OpenMM Energy:               -49.0 kJ/mol
+|_HarmonicBondForce:           0.0 kJ/mol
+|_HarmonicAngleForce:          0.0 kJ/mol
+|_PeriodicTorsionForce:        0.0 kJ/mol
+|_NonbondedForce:            -49.0 kJ/mol
+|_CustomNonbondedForce:        0.0 kJ/mol
+|_CMMotionRemover:             0.0 kJ/mol
+
+-----------------------------Frame 00000005-----------------------------
+Kinetic Energy:             3209.5 kJ/mol
+Psi4 Energy:            -2520017.4 kJ/mol
+Correction Energy:            -0.0 kJ/mol
+Total Energy:           -2516856.9 kJ/mol

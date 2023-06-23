@@ -47,13 +47,13 @@ PLUMED: Action PRINT
 PLUMED:   with label @4
 PLUMED:   with stride 1
 PLUMED:   with arguments d12 d13 diff restraint.bias
-PLUMED:   on file qmmm_output/colvar.dat
+PLUMED:   on file qmmm_output_liquid/colvar.dat
 PLUMED:   with format  %f
 PLUMED:                                               Cycles        Total      Average      Minimum      Maximum
-PLUMED:                                                    1     0.001845     0.001845     0.001845     0.001845
-PLUMED: 1 Prepare dependencies                             6     0.000017     0.000003     0.000002     0.000003
-PLUMED: 2 Sharing data                                     6     0.000668     0.000111     0.000030     0.000517
+PLUMED:                                                    1     0.002091     0.002091     0.002091     0.002091
+PLUMED: 1 Prepare dependencies                             6     0.000016     0.000003     0.000002     0.000003
+PLUMED: 2 Sharing data                                     6     0.000840     0.000140     0.000027     0.000699
 PLUMED: 3 Waiting for data                                 6     0.000006     0.000001     0.000001     0.000001
-PLUMED: 4 Calculating (forward loop)                       6     0.000133     0.000022     0.000015     0.000056
-PLUMED: 5 Applying (backward loop)                         6     0.000191     0.000032     0.000022     0.000035
-PLUMED: 6 Update                                           6     0.000100     0.000017     0.000013     0.000033
+PLUMED: 4 Calculating (forward loop)                       6     0.000088     0.000015     0.000013     0.000015
+PLUMED: 5 Applying (backward loop)                         6     0.000196     0.000033     0.000027     0.000034
+PLUMED: 6 Update                                           6     0.000096     0.000016     0.000011     0.000033

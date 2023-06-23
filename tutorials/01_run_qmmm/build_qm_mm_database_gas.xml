@@ -2,7 +2,7 @@
    <OpenMM_Settings>
        <ffdir dir="ffdir_pbnn" />
        <!--This file should be contained in ffdir_pbnn, contains the system definitions for OpenMM but the coordinates are not important!-->
-       <pdb_file file="diabat1_solvent.pdb" />
+       <pdb_file file="diabat1.pdb" />
        <!--We need different force field parameter files for QMMM and the PBNN modules, as the PBNN requires a Morse potential!-->
        <!--These two files should also be in ffdir!-->
        <ff_file file="SN2_no_intra_qmmm.xml" />
@@ -19,25 +19,25 @@
        <quadrature_spherical value="194"/>
        <qm_charge value="-1"/>
        <qm_spin value="1" />
-       <n_threads value="8" />
+       <n_threads value="1" />
        <read_guess value="False" />
        <pruning value="TREUTLER" />
        <embedding_cutoff value="14" />
    </Psi4_Settings>
    <!--The Plumed file can be changed in order to explore different regions of phase space or for using a different biased sampling algorithm!-->
    <Plumed_Settings>
-       <plumed_file file="plumed_command_0.txt" />
+       <plumed_file file="plumed_command_gas.txt" />
    </Plumed_Settings>
    <Simulation_Settings>
        <!--This is a prefix name for output files!-->
-       <name name="sn2_liquid" />
+       <name name="sn2_gas" />
        <!--Directory to store output files in!-->
-       <tmp_dir name="qmmm_output" />
+       <tmp_dir name="qmmm_output_gas" />
        <!--Set to True if the simulation is being restarted from a previous job!-->
        <restart value="False"/>
        <!--atoms contains the name of the file with the initial coordinates for simulations, can be any file format ASE can read!-->
        <!--This file should be in the base directory the job is being run in along with this xml file!-->
-       <atoms name="diabat1_solvent.pdb"/>
+       <atoms name="diabat1.pdb"/>
        <ensemble name="nvt" />
        <time_step value="1.0" />
        <num_steps value="5" />
