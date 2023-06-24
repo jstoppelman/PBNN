@@ -258,6 +258,8 @@ class CustomTask(pl.LightningModule):
             if "_ij" in key:
                 og_name = key.split('_ij')[0]
                 tmp_inputs[og_name] = inputs[key]
+
+        tmp_inputs["training"] = torch.ones_like(inputs["energy"])
         return tmp_inputs
 
     def loss_fn(self, pred, batch):

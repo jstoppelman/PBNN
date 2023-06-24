@@ -178,12 +178,15 @@ class Train_NNIntra(Train_NN):
                 prop = {'energy': energy}
                 if len(self.forces):
                     prop['forces'] = self.forces[i]
+                prop['training'] = np.asarray([1.0])
                 p_list.append(prop)
 
         if not self.use_current_db:
             if os.path.isfile(f'{self.name}.db'): os.remove(f'{self.name}.db')
 
-            db = ASEAtomsData.create(f'{self.name}.db', distance_unit='A', property_unit_dict={'energy': 'kJ/mol', 'forces': 'kJ/mol/A'})
+            db = ASEAtomsData.create(f'{self.name}.db', 
+                    distance_unit='A', 
+                    property_unit_dict={'energy': 'kJ/mol', 'forces': 'kJ/mol/A', 'training': None})
             db.add_systems(p_list, self.data)
         
         if not keep_split:
@@ -260,10 +263,16 @@ class Train_NNIntra(Train_NN):
         model_eng = sch.task.ModelOutput('y', target_property='energy', loss_fn=torch.nn.MSELoss(), loss_weight=0.1, metrics=mae_dict)
         model_force = sch.task.ModelOutput('dr_y', target_property='forces', loss_fn=torch.nn.MSELoss(), loss_weight=0.9, metrics=mae_dict)
 
+        if mu:
+            damping = sch.atomistic.response.Damping()
+            output_modules = [ouptut, damping, forces]
+        else:
+            output_modules = [output, forces]
+
         model = sch.model.NeuralNetworkPotential(
             rep,
             input_modules=[sch.atomistic.PairwiseDistances()],
-            output_modules=[output, forces])
+            output_modules=output_modules)
 
         #old_model = torch.load("ch3cl_model")
         #old_params = {}
@@ -399,6 +408,7 @@ class Train_NNInter(Train_NN):
                     prop['energy'] = self.energy[i]
                 if len(self.forces):
                     prop['forces'] = self.forces[i]
+                prop['training'] = np.asarray([1.0])
                 p_list.append(prop)
 
         atomic_numbers_all = []
@@ -415,6 +425,7 @@ class Train_NNInter(Train_NN):
             property_unit_dict['energy'] = 'kJ/mol'
         if len(self.forces):
             property_unit_dict['forces'] = 'kJ/mol/A'
+        property_unit_dict['training'] = None
         
         if not self.use_current_db:
             db = ASEAtomsData.create(f'{self.name}.db', distance_unit='A', property_unit_dict=property_unit_dict)
@@ -473,10 +484,11 @@ class Train_NNInter(Train_NN):
         else:
             raise Exception("Need to have energy or force properties")
 
+        damping = sch.atomistic.response.Damping()
         model = sch.model.PairwiseModel(
             apnet,
             input_modules=[sch.atomistic.APNetFeatures()],
-            output_modules=[output, forces])
+            output_modules=[output, damping, forces])
 
         optimizer_args = {'lr': lr}
         self.learn_task = sch.task.AtomisticTask(
@@ -695,6 +707,7 @@ class Train_NNHij(Train_NN):
                     prop['energy'] = self.h12_energy[i]
                 if len(self.forces):
                     prop['forces'] = self.h12_forces[i]
+                prop['training'] = np.asarray([1.0])
                 p_list.append(prop)
 
         atomic_numbers_all = []
@@ -711,6 +724,7 @@ class Train_NNHij(Train_NN):
             property_unit_dict['energy'] = 'kJ/mol'
         if len(self.forces):
             property_unit_dict['forces'] = 'kJ/mol/A'
+        property_unit_dict['training'] = None
 
         if not self.use_current_db:
             db = ASEAtomsData.create(f'{self.name}.db', distance_unit='A', property_unit_dict=property_unit_dict)
@@ -760,10 +774,11 @@ class Train_NNHij(Train_NN):
         else:
             raise Exception("Need to have energy or force properties")
 
+        damping = sch.atomistic.response.Damping()
         model = sch.model.PairwiseModel_OffDiag(
             apnet,
             input_modules=[sch.atomistic.APNetFeatures_OffDiag()],
-            output_modules=[output, forces])
+            output_modules=[output, damping, forces])
 
         optimizer_args = {'lr': lr}
         self.learn_task = sch.task.AtomisticTask(
@@ -994,10 +1009,11 @@ class Train_NNQMMM(Train_NN):
         output = sch.atomistic.PairwiseSolvent(n_in=n_in, n_hidden=n_in, n_layers=4, elements=elements)
         forces = sch.atomistic.response.Forces(calc_forces=True, energy_key='y', force_key='dr_y')
 
+        damping = sch.atomistic.response.Damping()
         model = sch.model.PairwiseModelSolvent(
             apnet,
             input_modules=[sch.atomistic.APNetFeatures()],
-            output_modules=[output, forces])
+            output_modules=[output, damping, forces])
 
         self.nn_inter_models.append(model)
 
@@ -1073,10 +1089,11 @@ class Train_NNQMMM(Train_NN):
         output = sch.atomistic.Pairwise_OffDiagSolvent(n_in=n_in, n_hidden=n_in, n_layers=4, elements=elements)
         forces = sch.atomistic.response.Forces(calc_forces=True, energy_key='y', force_key='dr_y')
 
+        damping = sch.atomistic.response.Damping()
         self.hij_model = sch.model.PairwiseModel_OffDiagSolvent(
             apnet,
             input_modules=[sch.atomistic.APNetFeatures_OffDiag()],
-            output_modules=[output, forces]
+            output_modules=[output, damping, forces]
             )
 
     def construct_database(self,
