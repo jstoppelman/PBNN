@@ -17,6 +17,7 @@ import ase.md.velocitydistribution as ase_md_veldist
 import ase.optimize
 from ase import units
 from ase.calculators.singlepoint import SinglePointDFTCalculator
+from ase.io.trajectory import TrajectoryWriter
 
 from .qmmm_hamiltonian import *
 from .logger import Logger
@@ -263,7 +264,7 @@ class QMMMEnvironment:
         forces = self.atoms.get_forces()
         return energy, forces
 
-    def run_test(self, atoms):
+    def run_test(self, atoms, name, write_mode):
         self.openmm_interface.create_subsystem()
 
         self.atoms.set_masses(self.openmm_interface.get_masses())
@@ -280,8 +281,12 @@ class QMMMEnvironment:
 
         self.atoms.set_calculator(calculator)
 
-        #traj_file = os.path.join(self.tmp, "{}.dcd".format(name))
+        traj_file = os.path.join(self.tmp, "{}.traj".format(name))
+        if os.path.isfile(traj_file) and write_mode == "w":
+            os.remove(traj_file)
+
         traj = []
+        traj_file = TrajectoryWriter(traj_file, write_mode)
         for frame in atoms:
             self.atoms = frame
             self.atoms.set_masses(self.openmm_interface.get_masses())
@@ -295,11 +300,10 @@ class QMMMEnvironment:
     
                 calc = SinglePointDFTCalculator(frame, energy=energy, forces=forces)
                 frame.calc = calc
-                traj.append(frame)
+                traj_file.write(frame)
+
             except:
                 print("Calculation failed")
-
-        ase.io.write(f"{self.tmp}.traj", traj)
 
     def run_md(self, steps):
         """

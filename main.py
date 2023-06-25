@@ -33,16 +33,18 @@ def main():
         qm_mm_setup = QMMMSetup(settings)
 
         #qm_mm is the ASE object, simulation_settings is one of the dictionaries produced from the xml input file 
-        qm_mm, simulation_settings = qm_mm_setup.get_qmmm()
-        
+        qm_mm, simulation_settings= qm_mm_setup.get_qmmm()
+
         jobtype = simulation_settings.get("jobtype", None)
         if jobtype == "single_point":
-            atoms = simulation_settings["atoms"]
-
-            qm_mm.run_test(atoms)
-
+            atoms = simulation_settings["atoms"] 
+            write_mode = simulation_settings["write_mode"]
+            name = simulation_settings["name"]
+            qm_mm.run_test(atoms, name, write_mode)
         else:
+            
             name, ensemble, time_step, write_freq = simulation_settings["name"], simulation_settings["ensemble"], simulation_settings["time_step"], simulation_settings["write_freq"]
+            restart = simulation_settings["restart"]
             
             num_steps = simulation_settings["num_steps"]
 
@@ -63,7 +65,8 @@ def main():
                     temp_init=temp_init,
                     remove_translation=remove_translation,
                     remove_rotation=remove_rotation,
-                    embed_electrode=False)
+                    embed_electrode=False,
+                    restart=restart)
             
             #Run simulation
             qm_mm.run_md(num_steps)
