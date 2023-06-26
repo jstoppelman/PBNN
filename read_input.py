@@ -485,6 +485,8 @@ class TrainSetup:
         self.use_current_db = self.train_settings["use_current_db"] == "True"
         #Determine whether to reload existing checkpoint
         self.continue_train = self.train_settings["continue_train"] == "True"
+        #Determine whether adding data to db
+        self.add_data = self.train_settings["add_data"] == "True"
 
         #Setup different training types
         if train_type == "intra":
@@ -567,7 +569,8 @@ class TrainSetup:
             openmm=openmm,
             name=self.train_name,
             use_current_db=self.use_current_db,
-            continue_train=self.continue_train
+            continue_train=self.continue_train,
+            add_data=self.add_data
             )
     
         nnintra_train.construct_model(
@@ -845,7 +848,8 @@ class TrainSetup:
                     e_potential=e_potential,
                     name=self.train_name,
                     use_current_db=self.use_current_db,
-                    continue_train=self.continue_train
+                    continue_train=self.continue_train,
+                    add_data=self.add_data
                 )
 
         #Setup inter NN for each diabat

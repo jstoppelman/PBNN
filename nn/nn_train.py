@@ -25,7 +25,7 @@ class Train_NN:
     """
     Base class to set up training for all neural networks
     """
-    def __init__(self, data, energy, forces, name=None, use_current_db=False, delete_data=True, continue_train=False):
+    def __init__(self, data, energy, forces, name=None, use_current_db=False, delete_data=True, continue_train=False, add_data=False):
         """
         data : list
             list of ASE atoms objects, represents the dataset
@@ -54,6 +54,7 @@ class Train_NN:
         self.use_current_db = use_current_db
         self.delete_data = delete_data
         self.continue_train = continue_train
+        self.add_data = add_data
 
     def construct_train(self):
         raise NotImplementedError
@@ -68,9 +69,25 @@ class Train_NNIntra(Train_NN):
     """
     Class to set up and perform training for the intramolecular neural network
     """
-    def __init__(self, data, energy, forces, openmm=None, name=None, use_current_db=False, delete_data=True, continue_train=False):
+    def __init__(self, 
+            data, 
+            energy, 
+            forces, 
+            openmm=None, 
+            name=None, 
+            use_current_db=False, 
+            delete_data=True, 
+            continue_train=False,
+            add_data=False):
 
-        super(Train_NNIntra, self).__init__(data, energy, forces, name=name, use_current_db=use_current_db, delete_data=delete_data, continue_train=continue_train)
+        super(Train_NNIntra, self).__init__(data, 
+                energy, 
+                forces, 
+                name=name, 
+                use_current_db=use_current_db, 
+                delete_data=delete_data, 
+                continue_train=continue_train,
+                add_data=add_data)
 
         self.openmm = openmm
 
@@ -171,7 +188,7 @@ class Train_NNIntra(Train_NN):
             Where to run training
         """
 
-        if not self.use_current_db:
+        if not self.use_current_db or self.add_data:
             #Get properties
             p_list = []
             for i, energy in enumerate(self.energy):
@@ -181,12 +198,17 @@ class Train_NNIntra(Train_NN):
                 prop['training'] = np.asarray([1.0])
                 p_list.append(prop)
 
-        if not self.use_current_db:
+        if not self.use_current_db and not self.add_data:
             if os.path.isfile(f'{self.name}.db'): os.remove(f'{self.name}.db')
-
+        
             db = ASEAtomsData.create(f'{self.name}.db', 
-                    distance_unit='A', 
-                    property_unit_dict={'energy': 'kJ/mol', 'forces': 'kJ/mol/A', 'training': None})
+                distance_unit='A', 
+                property_unit_dict={'energy': 'kJ/mol', 'forces': 'kJ/mol/A', 'training': None})
+            
+            db.add_systems(p_list, self.data)
+        
+        if self.add_data:
+            db = ASEAtomsData(f"{self.name}.db")
             db.add_systems(p_list, self.data)
         
         if not keep_split:
@@ -265,7 +287,7 @@ class Train_NNIntra(Train_NN):
 
         if mu:
             damping = sch.atomistic.response.Damping()
-            output_modules = [ouptut, damping, forces]
+            output_modules = [output, damping, forces]
         else:
             output_modules = [output, forces]
 
@@ -797,8 +819,18 @@ class Train_NNQMMM(Train_NN):
     """
     Train H11 inter NN, H22 inter NN and Hij NN simultaneously
     """
-    def __init__(self, data, energy, forces, diabats, e_field=[], e_potential=[], name=None, use_current_db=False, continue_train=False):
-        super(Train_NNQMMM, self).__init__(data, energy, forces, name=name, use_current_db=use_current_db, continue_train=continue_train)
+    def __init__(self, 
+            data, 
+            energy, 
+            forces, 
+            diabats, 
+            e_field=[], 
+            e_potential=[], 
+            name=None, 
+            use_current_db=False, 
+            continue_train=False,
+            add_data=False):
+        super(Train_NNQMMM, self).__init__(data, energy, forces, name=name, use_current_db=use_current_db, continue_train=continue_train, add_data=add_data)
         
         #List of Diabat objects
         self.diabats = diabats
@@ -1157,7 +1189,7 @@ class Train_NNQMMM(Train_NN):
                 prop['potential_solvent_ij'] = self.potential_solvent[i]
                 p_list.append(prop)
             if os.path.isfile(f'{self.name}.db'): os.remove(f'{self.name}.db')
-       
+        
         #Units don't really mater, they just have to all be present in the dictionary
         property_unit_dict = {}
         if len(self.energy):
@@ -1176,8 +1208,16 @@ class Train_NNQMMM(Train_NN):
         property_unit_dict['reorder_indices'] = None
         property_unit_dict['reverse_reorder_indices'] = None
 
-        if not self.use_current_db:
-            db = ASEAtomsData.create(f'{self.name}.db', distance_unit='A', property_unit_dict=property_unit_dict)
+        if not self.use_current_db and not self.add_data:
+            if os.path.isfile(f'{self.name}.db'): os.remove(f'{self.name}.db')
+            db = ASEAtomsData.create(f'{self.name}.db',
+                distance_unit='A',
+                property_unit_dict=property_unit_dict)
+
+            db.add_systems(p_list, self.data)
+
+        if self.add_data:
+            db = ASEAtomsData(f"{self.name}.db")
             db.add_systems(p_list, self.data)
 
         if not keep_split:
