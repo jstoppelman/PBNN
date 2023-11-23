@@ -200,7 +200,7 @@ class Train_NNIntra(Train_NN):
 
         if not self.use_current_db and not self.add_data:
             if os.path.isfile(f'{self.name}.db'): os.remove(f'{self.name}.db')
-        
+            
             db = ASEAtomsData.create(f'{self.name}.db', 
                 distance_unit='A', 
                 property_unit_dict={'energy': 'kJ/mol', 'forces': 'kJ/mol/A', 'training': None})
@@ -317,7 +317,7 @@ class Train_NNIntra(Train_NN):
             scheduler_monitor=monitor_term
         )
 
-        self.trainer = Trainer(gpus=num_gpu, max_epochs=num_epochs, callbacks=[ModelCheckpoint(f"{train_dir}/best_model", monitor=monitor_term)], accelerator=accelerator, default_root_dir=train_dir)
+        self.trainer = Trainer(devices=num_gpu, max_epochs=num_epochs, callbacks=[ModelCheckpoint(f"{train_dir}/best_model", monitor=monitor_term)], accelerator=accelerator, default_root_dir=train_dir)
 
 class Train_NNInter(Train_NN):
     """
@@ -523,7 +523,7 @@ class Train_NNInter(Train_NN):
             scheduler_monitor=monitor_term
         )
         
-        self.trainer = Trainer(gpus=num_gpu, max_epochs=num_epochs, callbacks=[ModelCheckpoint(f"{train_dir}/best_model", monitor=monitor_term)], accelerator=accelerator, default_root_dir=train_dir)
+        self.trainer = Trainer(devices=num_gpu, max_epochs=num_epochs, callbacks=[ModelCheckpoint(f"{train_dir}/best_model", monitor=monitor_term)], accelerator=accelerator, default_root_dir=train_dir)
 
 class Train_NNHij(Train_NN):
     """
@@ -813,7 +813,7 @@ class Train_NNHij(Train_NN):
             scheduler_monitor=monitor_term
         )
 
-        self.trainer = Trainer(gpus=num_gpu, max_epochs=num_epochs, callbacks=[ModelCheckpoint(f"{train_dir}/best_model", monitor=monitor_term)], accelerator=accelerator, default_root_dir=train_dir)
+        self.trainer = Trainer(devices=num_gpu, max_epochs=num_epochs, callbacks=[ModelCheckpoint(f"{train_dir}/best_model", monitor=monitor_term)], accelerator=accelerator, default_root_dir=train_dir)
 
 class Train_NNQMMM(Train_NN):
     """
@@ -1261,5 +1261,5 @@ class Train_NNQMMM(Train_NN):
             scheduler_monitor=monitor_term
         )
 
-        self.trainer = Trainer(gpus=num_gpu, max_epochs=num_epochs, callbacks=[ModelCheckpoint(f"{train_dir}/best_model", monitor=monitor_term)], accelerator=accelerator, default_root_dir=train_dir)
+        self.trainer = Trainer(devices=num_gpu, max_epochs=num_epochs, callbacks=[ModelCheckpoint(f"{train_dir}/best_model", monitor=monitor_term)], accelerator=accelerator, default_root_dir=train_dir)
 

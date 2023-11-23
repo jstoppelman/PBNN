@@ -77,7 +77,6 @@ class QMMMHamiltonian(Calculator):
                 default=ase.calculators.calculator.all_changes
             List of changes for ASE.
         """
-
         result = {}
        
         if self.has_periodic_box and not self.plumed_call:

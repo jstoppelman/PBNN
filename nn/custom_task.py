@@ -398,7 +398,6 @@ class CustomTask(pl.LightningModule):
         pred, targets = self.apply_constraints(pred, targets)
 
         loss = self.loss_fn(pred, targets)
-
         self.log("val_loss", loss, on_step=False, on_epoch=True, prog_bar=True)
         self.log_metrics(pred, targets, "val")
 
@@ -500,11 +499,7 @@ class CustomTask(pl.LightningModule):
         epoch: int = None,
         batch_idx: int = None,
         optimizer=None,
-        optimizer_idx: int = None,
         optimizer_closure=None,
-        on_tpu: bool = None,
-        using_native_amp: bool = None,
-        using_lbfgs: bool = None,
     ):
         """
         Optimize parameters
@@ -528,7 +523,7 @@ class CustomTask(pl.LightningModule):
         using_lbfgs : bool
             Whether using LBGFS optimizer
         """
-        if self.trainer.global_step < self.warmup_steps:
+        if self.global_step < self.warmup_steps:
             lr_scale = min(1.0, float(self.trainer.global_step + 1) / self.warmup_steps)
             for pg in optimizer.param_groups:
                 pg["lr"] = lr_scale * self.lr

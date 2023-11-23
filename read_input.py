@@ -396,6 +396,7 @@ class QMMMSetup:
             self.atoms = read(simulation_settings["atoms"], index=f"{start}::{stride}")
             self.simulation_settings_formatted["atoms"] = self.atoms
             self.simulation_settings_formatted["name"] = self.name
+            self.simulation_settings_formatted["write_mode"] = simulation_settings["write_mode"]
             self.rewrite = True
         else:
             time_step, num_steps = float(simulation_settings["time_step"]), int(simulation_settings["num_steps"])
